@@ -17,8 +17,12 @@ class SocialiteController extends Controller
 
     public function callback()
     {
-        // Google user object dari google
-        $userFromGoogle = Socialite::driver('google')->user();
+    // Google user object dari google
+    // use stateless() to avoid "InvalidStateException" when the session state
+    // cannot be validated (useful for some dev setups or cross-origin flows).
+    // If you prefer stricter protection, remove ->stateless() and ensure sessions
+    // persist between redirect and callback.
+    $userFromGoogle = Socialite::driver('google')->stateless()->user();
 
         // Ambil user dari database berdasarkan google user id
         $userFromDatabase = User::where('google_id', $userFromGoogle->getId())->first();
